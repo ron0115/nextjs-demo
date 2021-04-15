@@ -1,65 +1,76 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import { useEffect } from 'react'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+import Header from './components/header'
+const Home = () => {
+  const router = useRouter()
+  const gotoAbout = () => {
+    router.push({
+      pathname: '/news',
+      query: {
+        info: '学习Next.js'
+      }
+    })
+  }
 
-export default function Home() {
+  useEffect(() => {
+    const handleRouteChangeStart = (url) => {
+      console.log('routeChangeStart 路由开始变化，url:', url)
+    }
+
+    const handleRouteChangeComplete = (url) => {
+      console.log('routeChangeComplete 路由结束变化，url:', url)
+    }
+
+    const handleBeforeHistoryChange = (url) => {
+      console.log('beforeHistoryChange 在改变浏览器 history之前触发，url:', url)
+    }
+
+    const handleRouteChangeError = (err, url) => {
+      console.log(`routeChangeError 跳转发生错误: ${err}, url:${url}`)
+    }
+
+    const handleHashChangeStart = (url) => {
+      console.log('hashChangeStart hash路由模式跳转开始时执行，url:', url)
+    }
+
+    const handleHashChangeComplete = (url) => {
+      console.log('hashChangeComplete hash路由模式跳转完成时，url:', url)
+    }
+
+    router.events.on('routeChangeStart', handleRouteChangeStart)
+    router.events.on('routeChangeComplete', handleRouteChangeComplete)
+    router.events.on('beforeHistoryChange', handleBeforeHistoryChange)
+    router.events.on('routeChangeError', handleRouteChangeError)
+    router.events.on('hashChangeStart', handleHashChangeStart)
+    router.events.on('hashChangeComplete', handleHashChangeComplete)
+
+    return () => {
+      router.events.off('routeChangeStart', handleRouteChangeStart)
+      router.events.off('routeChangeComplete', handleRouteChangeComplete)
+      router.events.off('beforeHistoryChange', handleBeforeHistoryChange)
+      router.events.off('routeChangeError', handleRouteChangeError)
+      router.events.off('hashChangeStart', handleHashChangeStart)
+      router.events.off('hashChangeComplete', handleHashChangeComplete)
+    }
+  }, [])
+
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
+    <div>
+      <Header />
+      <div>Hello Next.js!</div>
+      <div>
+        <Link href='/about?name=jackylin'>
+          <a>关于</a>
+        </Link>
+      </div>
+      <div>
+        <button onClick={gotoAbout}>新闻 </button>
+      </div>
+      <Link href='/initialBlog'>
+        <a>进入Initial Blog</a>
+      </Link>
     </div>
   )
 }
+export default Home
